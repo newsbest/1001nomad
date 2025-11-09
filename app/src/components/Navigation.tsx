@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,9 +25,19 @@ const Navigation = () => {
 
   const menuItems = [
     { label: 'خانه', id: 'home' },
-    { label: 'ماموریت ما', id: 'about' },
-    { label: 'ویژگی‌های پلتفرم', id: 'how-it-works' },
-    { label: 'نظرات', id: 'testimonials' },
+    { label: 'خدمات ما', id: 'about' },
+    { label: 'دیجیتال نومد', href: 'https://1001nomad.com/site/digital-nomad/' },
+    { label: 'حقوق بشر', href: 'https://1001nomad.com/site/human-right/' },
+    {
+      label: 'اخبار',
+      href: 'https://1001nomad.com/site/news/',
+      submenu: [
+        { label: 'حقوق بشری', href: 'https://1001nomad.com/site/news-human-rights/' },
+        { label: 'زنان', href: 'https://1001nomad.com/site/news-women/' },
+        { label: 'دیجیتال', href: 'https://1001nomad.com/site/news-digital/' },
+      ]
+    },
+    { label: 'مقاله', href: 'https://1001nomad.com/site/articles/' },
   ];
 
   return (
@@ -50,15 +61,59 @@ const Navigation = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
-              >
-                {item.label}
-              </button>
-            ))}
+            {menuItems.map((item) => {
+              if ('submenu' in item) {
+                return (
+                  <div
+                    key={item.label}
+                    className="relative"
+                    onMouseEnter={() => setOpenSubmenu(item.label)}
+                    onMouseLeave={() => setOpenSubmenu(null)}
+                  >
+                    <a
+                      href={item.href}
+                      className="text-foreground hover:text-primary transition-colors duration-200 font-medium flex items-center gap-1"
+                    >
+                      {item.label}
+                      <ChevronDown className="h-4 w-4" />
+                    </a>
+                    {openSubmenu === item.label && (
+                      <div className="absolute top-full right-0 mt-2 bg-card border border-border rounded-lg shadow-lg py-2 min-w-[200px]">
+                        {item.submenu.map((subItem) => (
+                          <a
+                            key={subItem.label}
+                            href={subItem.href}
+                            className="block px-4 py-2 text-right text-foreground hover:bg-accent/10 hover:text-primary transition-colors duration-200"
+                          >
+                            {subItem.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              } else if ('href' in item) {
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+                  >
+                    {item.label}
+                  </a>
+                );
+              } else {
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+                  >
+                    {item.label}
+                  </button>
+                );
+              }
+            })}
           </div>
 
           {/* Desktop CTA Buttons */}
@@ -100,15 +155,54 @@ const Navigation = () => {
           }`}
         >
           <div className="flex flex-col gap-2 pt-2">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-right py-3 px-4 hover:bg-accent/10 rounded-lg transition-colors duration-200 text-foreground hover:text-primary font-medium"
-              >
-                {item.label}
-              </button>
-            ))}
+            {menuItems.map((item) => {
+              if ('submenu' in item) {
+                return (
+                  <div key={item.label}>
+                    <button
+                      onClick={() => setOpenSubmenu(openSubmenu === item.label ? null : item.label)}
+                      className="w-full text-right py-3 px-4 hover:bg-accent/10 rounded-lg transition-colors duration-200 text-foreground hover:text-primary font-medium flex items-center justify-between"
+                    >
+                      <ChevronDown className={`h-4 w-4 transition-transform ${openSubmenu === item.label ? 'rotate-180' : ''}`} />
+                      {item.label}
+                    </button>
+                    {openSubmenu === item.label && (
+                      <div className="pr-4 flex flex-col gap-1 mt-1">
+                        {item.submenu.map((subItem) => (
+                          <a
+                            key={subItem.label}
+                            href={subItem.href}
+                            className="text-right py-2 px-4 hover:bg-accent/10 rounded-lg transition-colors duration-200 text-foreground hover:text-primary"
+                          >
+                            {subItem.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              } else if ('href' in item) {
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="text-right py-3 px-4 hover:bg-accent/10 rounded-lg transition-colors duration-200 text-foreground hover:text-primary font-medium"
+                  >
+                    {item.label}
+                  </a>
+                );
+              } else {
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className="text-right py-3 px-4 hover:bg-accent/10 rounded-lg transition-colors duration-200 text-foreground hover:text-primary font-medium"
+                  >
+                    {item.label}
+                  </button>
+                );
+              }
+            })}
             <div className="flex flex-col gap-2 mt-2 px-4">
               <Button
                 variant="outline"

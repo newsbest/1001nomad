@@ -25,7 +25,7 @@ const Hero = () => {
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight">
               هزار و یک{" "}
-              <span className="text-gradient-primary">زن جهانگرد</span>
+              <span className="text-gradient-primary">نومد</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-2xl">
