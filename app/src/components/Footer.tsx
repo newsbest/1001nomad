@@ -14,7 +14,7 @@ const Footer = () => {
               <img src={logo} alt="1001Nomads" className="h-16 w-16 rounded-lg" />
               <div>
                 <div className="text-2xl font-black">۱۰۰۱ نومد</div>
-                <div className="text-sm text-background/70">راه شما به آزادی اقتصادی</div>
+                <div className="text-sm text-background/70">انقلاب دیجیتال برای زنان ایرانی</div>
               </div>
             </div>
             <p className="text-background/80 leading-relaxed">
