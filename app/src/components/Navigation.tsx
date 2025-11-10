@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 
@@ -6,6 +6,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,10 +24,30 @@ const Navigation = () => {
     }
   };
 
+  const handleSubmenuEnter = (label: string) => {
+    if (submenuTimeoutRef.current) {
+      clearTimeout(submenuTimeoutRef.current);
+    }
+    setOpenSubmenu(label);
+  };
+
+  const handleSubmenuLeave = () => {
+    submenuTimeoutRef.current = setTimeout(() => {
+      setOpenSubmenu(null);
+    }, 300); // 300ms delay before hiding
+  };
+
   const menuItems = [
     { label: 'خانه', id: 'home' },
     { label: 'خدمات ما', id: 'about' },
-    { label: 'دیجیتال نومد', href: 'https://1001nomad.com/site/digital-nomad/' },
+    {
+      label: 'دیجیتال نومد',
+      href: 'https://1001nomad.com/site/digital-nomad/',
+      submenu: [
+        { label: 'کوچگرد دیجیتال', href: 'https://1001nomad.com/site/the-digital-nomad/' },
+        { label: 'معرفی فیلم و کتاب', href: 'https://1001nomad.com/site/suggest-book/' },
+      ]
+    },
     { label: 'حقوق بشر', href: 'https://1001nomad.com/site/human-right/' },
     {
       label: 'اخبار',
@@ -67,8 +88,8 @@ const Navigation = () => {
                   <div
                     key={item.label}
                     className="relative"
-                    onMouseEnter={() => setOpenSubmenu(item.label)}
-                    onMouseLeave={() => setOpenSubmenu(null)}
+                    onMouseEnter={() => handleSubmenuEnter(item.label)}
+                    onMouseLeave={handleSubmenuLeave}
                   >
                     <a
                       href={item.href}
