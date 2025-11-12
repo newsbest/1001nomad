@@ -17,7 +17,7 @@ const FinalCTA = () => {
           </div>
 
           <h2 className="text-4xl md:text-6xl font-black text-white leading-tight">
-            با کمک شما، آینده‌ای روشن‌تر می‌سازیم
+            با کمک شما، آینده‌ای برابر می‌سازیم
           </h2>
 
           <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl mx-auto">
